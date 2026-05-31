@@ -4,7 +4,9 @@
       "Bash(git init *)",
       "Bash(git config *)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(sed -i '29s/.*/\\\\t\\\\tvar viewport_size := get_viewport\\(\\).get_visible_rect\\(\\).size/' scripts/ui/scoreboard.gd)",
+      "Bash(sed -i '30s/.*/\\\\t\\\\tlabel.position = screen_pos/' scripts/ui/scoreboard.gd)"
     ]
   }
 }

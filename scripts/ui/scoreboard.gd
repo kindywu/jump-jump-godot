@@ -26,8 +26,7 @@ func _on_score_up(landing_pos: Vector3) -> void:
 	var camera: Camera3D = get_viewport().get_camera_3d()
 	if camera:
 		var screen_pos := camera.unproject_position(landing_pos)
-		var viewport_size := get_viewport().get_visible_rect().size
-		label.position = Vector2(screen_pos.x, viewport_size.y - screen_pos.y)
+		label.position = screen_pos
 
 	add_child(label)
 	score_up_labels.append(label)
