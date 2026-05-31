@@ -1,7 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cmain000000001"]
+[gd_scene load_steps=8 format=3 uid="uid://cmain000000001"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/camera.gd" id="2_camera"]
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="3_main_menu"]
+[ext_resource type="Script" path="res://scripts/ui/game_over.gd" id="4_game_over"]
+[ext_resource type="Script" path="res://scripts/ui/scoreboard.gd" id="5_scoreboard"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(100, 100)
@@ -38,6 +41,7 @@ one_shot = true
 
 [node name="MainMenu" type="Control" parent="UI"]
 layout_mode = 3
+script = ExtResource("3_main_menu")
 anchors_preset = 15
 grow_horizontal = 2
 grow_vertical = 2
@@ -45,6 +49,7 @@ grow_vertical = 2
 [node name="GameOver" type="Control" parent="UI"]
 visible = false
 layout_mode = 3
+script = ExtResource("4_game_over")
 anchors_preset = 15
 grow_horizontal = 2
 grow_vertical = 2
@@ -52,6 +57,7 @@ grow_vertical = 2
 [node name="Scoreboard" type="Control" parent="UI"]
 visible = false
 layout_mode = 3
+script = ExtResource("5_scoreboard")
 anchors_preset = 15
 grow_horizontal = 2
 grow_vertical = 2
