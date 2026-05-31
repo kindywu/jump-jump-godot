@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://cplatf00000001"]
+
+[ext_resource type="Script" path="res://scripts/platform.gd" id="1_platform"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_platform"]
+size = Vector3(1.5, 1.0, 1.5)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_platform"]
+top_radius = 0.75
+bottom_radius = 0.75
+height = 1.0
+
+[node name="Platform" type="Node3D"]
+script = ExtResource("1_platform")
+
+[node name="BoxMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("BoxMesh_platform")
+
+[node name="CylinderMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_platform")
+visible = false
