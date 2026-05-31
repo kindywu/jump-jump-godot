@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="jump-jump"
+run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
-run/main_scene="res://scenes/main.tscn"
+
+[autoload]
+
+GameState="*res://scripts/game_state.gd"
 
 [physics]
 
@@ -22,7 +26,3 @@ run/main_scene="res://scenes/main.tscn"
 [rendering]
 
 rendering_device/driver.windows="d3d12"
-
-[autoload]
-
-GameState="*res://scripts/game_state.gd"
