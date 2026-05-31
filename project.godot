@@ -25,3 +25,7 @@ bus_layout="res://default_bus_layout.tres"
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+
+[autoload]
+
+GameState="*res://scripts/game_state.gd"
