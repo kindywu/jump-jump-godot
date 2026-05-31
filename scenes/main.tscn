@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://cmain000000001"]
+[gd_scene load_steps=5 format=3 uid="uid://cmain000000001"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/camera.gd" id="2_camera"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
+albedo_color = Color(0.95, 0.87, 0.88, 1.0)
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_main")
@@ -16,7 +22,8 @@ script = ExtResource("2_camera")
 
 [node name="Ground" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-mesh = PlaneMesh()
+mesh = SubResource("PlaneMesh_ground")
+surface_material_override/0 = SubResource("StandardMaterial3D_ground")
 
 [node name="StartSound" type="AudioStreamPlayer" parent="."]
 stream = load("res://assets/sounds/start.mp3")

@@ -11,8 +11,11 @@ var next_platform: Node3D = null
 @onready var start_sound: AudioStreamPlayer = $StartSound
 @onready var prepare_timer: Timer = $PrepareTimer
 
+var input_ready := false
+
 func _ready() -> void:
 	GameState.state_changed.connect(_on_state_changed)
+	prepare_timer.timeout.connect(_on_prepare_timer_timeout)
 	_enter_main_menu()
 
 func _process(delta: float) -> void:
@@ -62,6 +65,7 @@ func _enter_playing() -> void:
 	_generate_next_platform()
 
 	# Start delay timer (200ms before accepting input)
+	input_ready = false
 	prepare_timer.start()
 	start_sound.play()
 
@@ -110,3 +114,6 @@ func _on_player_landed() -> void:
 		current_platform.set("is_current", true)
 	next_platform = null
 	_generate_next_platform()
+
+func _on_prepare_timer_timeout() -> void:
+	input_ready = true
