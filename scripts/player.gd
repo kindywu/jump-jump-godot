@@ -56,6 +56,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if GameState.current_state != GameState.State.PLAYING:
 		return
 
+	# Check 200ms prepare timer has elapsed
+	var main_node: Node3D = get_parent()
+	if main_node and not main_node.get("input_ready"):
+		return
+
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed and not jump_active and not fall_active:
 			_start_charge()
