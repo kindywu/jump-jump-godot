@@ -14,6 +14,10 @@ config/name="jump-jump"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[audio]
+
+bus_layout="res://default_bus_layout.tres"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
