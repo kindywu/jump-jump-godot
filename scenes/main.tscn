@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://cmain000000001"]
+[gd_scene load_steps=9 format=3 uid="uid://cmain000000001"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/camera.gd" id="2"]
 [ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="3"]
 [ext_resource type="Script" path="res://scripts/ui/game_over.gd" id="4"]
 [ext_resource type="Script" path="res://scripts/ui/scoreboard.gd" id="5"]
+[ext_resource type="AudioStream" path="res://assets/sounds/start.mp3" id="6"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(100, 100)
@@ -29,7 +30,7 @@ mesh = SubResource("PlaneMesh_ground")
 surface_material_override/0 = SubResource("StandardMaterial3D_ground")
 
 [node name="StartSound" type="AudioStreamPlayer" parent="."]
-stream = load("res://assets/sounds/start.mp3")
+stream = ExtResource("6")
 
 [node name="Platforms" type="Node3D" parent="."]
 

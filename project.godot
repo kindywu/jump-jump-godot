@@ -15,10 +15,6 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 run/main_scene="res://scenes/main.tscn"
 
-[audio]
-
-bus_layout="res://default_bus_layout.tres"
-
 [physics]
 
 3d/physics_engine="Jolt Physics"

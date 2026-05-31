@@ -7,7 +7,11 @@
       "Bash(git commit *)",
       "Bash(sed -i '29s/.*/\\\\t\\\\tvar viewport_size := get_viewport\\(\\).get_visible_rect\\(\\).size/' scripts/ui/scoreboard.gd)",
       "Bash(sed -i '30s/.*/\\\\t\\\\tlabel.position = screen_pos/' scripts/ui/scoreboard.gd)",
-      "Bash(godot --headless --quit)"
+      "Bash(godot --headless --quit)",
+      "Bash(cmd.exe /c \"godot --headless --quit 2>&1\")",
+      "Bash(cmd.exe /c \"where godot 2>&1\")",
+      "Bash(\"/c/bin/godot\" --headless --quit)",
+      "Bash(\"C:/bin/Godot_v4.6.2-stable_win64.exe\" --headless --quit)"
     ]
   }
 }
