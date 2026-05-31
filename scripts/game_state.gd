@@ -19,4 +19,4 @@ func add_score() -> void:
 
 func reset_score() -> void:
 	score = 0
-	score_changed.emit(0)
+	score_changed.emit(score)
