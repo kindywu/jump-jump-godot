@@ -18,7 +18,7 @@ var jump_active := false
 var jump_start_pos := Vector3.ZERO
 var jump_end_pos := Vector3.ZERO
 var jump_duration := 0.0
-var jump_falled := false
+var jump_failed := false
 
 # Fall
 var fall_active := false
@@ -38,7 +38,7 @@ var fall_played_sound := false
 @onready var charge_particle_timer: Timer = $ChargeParticleTimer
 
 func _ready() -> void:
-	transform.origin = INITIAL_POS
+	position = INITIAL_POS
 	charge_particle_timer.timeout.connect(_on_charge_particle_timeout)
 
 func _process(delta: float) -> void:
@@ -85,10 +85,10 @@ func _do_jump() -> void:
 	charge_particle_timer.stop()
 	accumulation_player.stop()
 
-	var player_pos := transform.origin
+	var player_pos := position
 	var current_platform: Node3D = main_node.get("current_platform")
-	var current_pos := current_platform.transform.origin
-	var next_pos := next_platform.transform.origin
+	var current_pos := current_platform.position
+	var next_pos := next_platform.position
 
 	# Calculate landing position
 	var landing_pos: Vector3
@@ -107,13 +107,13 @@ func _do_jump() -> void:
 	var landed_current := _is_landed_on(current_platform, landing_pos)
 
 	if landed_next or landed_current:
-		jump_falled = false
+		jump_failed = false
 		if landed_next:
 			GameState.add_score()
 			GameState.score_up.emit(landing_pos + Vector3.UP * 0.5)
 			main_node._on_player_landed()
 	else:
-		jump_falled = true
+		jump_failed = true
 		if _is_touched(current_platform, landing_pos, 0.2):
 			var fd := Vector3.LEFT if abs(landing_pos.x - player_pos.x) < 0.1 else Vector3.FORWARD
 			_start_tilt_fall(landing_pos, fd)
@@ -136,7 +136,7 @@ func _animate_charge(delta: float) -> void:
 	scale.y = maxf(scale.y - CHARGE_Y_RATE * delta, MIN_SCALE_Y)
 	scale.z = minf(scale.z + CHARGE_XZ_RATE * delta, MAX_SCALE_XZ)
 	# Keep bottom at platform level
-	transform.origin.y = INITIAL_POS.y + (scale.y - 1.0) * 0.25
+	position.y = INITIAL_POS.y + (scale.y - 1.0) * 0.25
 
 func _animate_jump(delta: float) -> void:
 	var around_point := (jump_start_pos + jump_end_pos) / 2.0
@@ -148,53 +148,50 @@ func _animate_jump(delta: float) -> void:
 
 	var angle := -(1.0 / jump_duration) * PI * delta
 	var quat := Quaternion(rotate_axis, angle)
-	var offset := transform.origin - around_point
+	var offset := position - around_point
 	var new_pos := around_point + quat * offset
 
 	if new_pos.y < INITIAL_POS.y:
 		# Jump complete - land
-		transform.origin = jump_end_pos
+		position = jump_end_pos
 		transform.basis = Basis.IDENTITY
 		scale = Vector3.ONE
 		jump_active = false
-		if not jump_falled:
+		if not jump_failed:
 			success_player.play()
 	else:
-		transform.origin = new_pos
+		position = new_pos
 		# Self-rotation (flip)
 		var self_angle := -(1.0 / jump_duration) * TAU * delta
-		rotate_object_local(rotate_axis, self_angle)
+		rotate(rotate_axis, self_angle)
 
 func _animate_fall(delta: float) -> void:
+	if not fall_played_sound:
+		fall_player.play()
+		fall_played_sound = true
 	match fall_type:
 		FallType.STRAIGHT:
-			if not fall_played_sound:
-				fall_player.play()
-				fall_played_sound = true
-			if transform.origin.y < 0.5:
+			if position.y < 0.5:
 				fall_active = false
 				GameState.change_state(GameState.State.GAME_OVER)
 			else:
-				transform.origin.y -= FALL_SPEED * delta
+				position.y -= FALL_SPEED * delta
 		FallType.TILT:
-			if not fall_played_sound:
-				fall_player.play()
-				fall_played_sound = true
 			if not fall_tilt_done:
 				var pivot := Vector3(fall_pos.x, INITIAL_POS.y - 0.5, fall_pos.z)
-				if transform.origin.y < pivot.y:
+				if position.y < pivot.y:
 					fall_tilt_done = true
 				else:
 					var quat := Quaternion(fall_tilt_dir, PI / 2.0 * delta)
-					var off := transform.origin - pivot
-					transform.origin = pivot + quat * off
+					var off := position - pivot
+					position = pivot + quat * off
 					transform.basis = Basis(quat) * transform.basis
 			else:
-				if transform.origin.y < 0.2:
+				if position.y < 0.2:
 					fall_active = false
 					GameState.change_state(GameState.State.GAME_OVER)
 				else:
-					transform.origin.y -= FALL_SPEED * delta
+					position.y -= FALL_SPEED * delta
 
 func _start_straight_fall(pos: Vector3) -> void:
 	fall_active = true
@@ -213,7 +210,7 @@ func _start_tilt_fall(pos: Vector3, direction: Vector3) -> void:
 static func _is_landed_on(platform: Node3D, pos: Vector3) -> bool:
 	if platform == null:
 		return false
-	var ppos := platform.transform.origin
+	var ppos := platform.position
 	if platform.has_meta("shape"):
 		var shape: String = platform.get_meta("shape")
 		match shape:
@@ -224,7 +221,7 @@ static func _is_landed_on(platform: Node3D, pos: Vector3) -> bool:
 static func _is_touched(platform: Node3D, pos: Vector3, radius: float) -> bool:
 	if platform == null:
 		return false
-	var ppos := platform.transform.origin
+	var ppos := platform.position
 	if platform.has_meta("shape"):
 		var shape: String = platform.get_meta("shape")
 		match shape:
