@@ -3,12 +3,16 @@ extends Control
 var score_label: Label = null
 var score_up_labels: Array[Label] = []
 
+var num_font: Font = load("res://assets/fonts/num.ttf")
+
 func _ready() -> void:
 	GameState.score_changed.connect(_on_score_changed)
 	GameState.score_up.connect(_on_score_up)
 
 	# Score label at top-left
 	score_label = Label.new()
+	if num_font:
+		score_label.add_theme_font_override("font", num_font)
 	score_label.add_theme_font_size_override("font_size", 40)
 	score_label.add_theme_color_override("font_color", Color(0.5, 0.5, 1.0))
 	score_label.position = Vector2(30, 30)
@@ -19,6 +23,8 @@ func _on_score_changed(new_score: int) -> void:
 
 func _on_score_up(landing_pos: Vector3) -> void:
 	var label := Label.new()
+	if num_font:
+		label.add_theme_font_override("font", num_font)
 	label.add_theme_font_size_override("font_size", 40)
 	label.add_theme_color_override("font_color", Color(0.5, 0.5, 1.0))
 	label.text = "+1"
@@ -52,7 +58,7 @@ func _process(delta: float) -> void:
 		color.a *= 0.97
 		label.add_theme_color_override("font_color", color)
 
-		if label.position.y < -40:
+		if color.a < 0.05:
 			to_remove.append(i)
 
 	to_remove.reverse()

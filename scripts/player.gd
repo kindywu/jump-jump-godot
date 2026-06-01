@@ -54,17 +54,22 @@ func _process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if GameState.current_state != GameState.State.PLAYING:
+		print("[Player] Input ignored: game state is not PLAYING, current=", GameState.current_state)
 		return
 
 	# Check 200ms prepare timer has elapsed
 	var main_node: Node3D = get_parent()
 	if main_node and not main_node.get("input_ready"):
+		print("[Player] Input ignored: input_ready=false, prepare timer not elapsed")
 		return
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		print("[Player] Mouse left button event: pressed=", event.pressed, " jump_active=", jump_active, " fall_active=", fall_active, " charging=", charging)
 		if event.pressed and not jump_active and not fall_active:
+			print("[Player] Starting charge")
 			_start_charge()
 		elif not event.pressed and charging:
+			print("[Player] Releasing jump")
 			_do_jump()
 
 func _start_charge() -> void:
@@ -89,6 +94,10 @@ func _do_jump() -> void:
 	charge_particles.emitting = false
 	charge_particle_timer.stop()
 	accumulation_player.stop()
+
+	# Reset player scale immediately on release
+	scale = Vector3.ONE
+	position.y = INITIAL_POS.y
 
 	var player_pos := position
 	var current_platform: Node3D = main_node.get("current_platform")

@@ -4,7 +4,7 @@ const INITIAL_POS := Vector3(-5.0, 8.0, 5.0)
 
 func _ready() -> void:
 	position = INITIAL_POS
-	look_at(Vector3(0.0, 1.0, 0.0), Vector3.UP)
+	look_at(Vector3.ZERO, Vector3.UP)
 
 func _process(delta: float) -> void:
 	if GameState.current_state != GameState.State.PLAYING:
@@ -25,4 +25,4 @@ func _process(delta: float) -> void:
 		return
 
 	var camera_destination := INITIAL_POS + player_pos
-	position = position.lerp(camera_destination, 1.0 - exp(-5.0 * delta))
+	position = position.lerp(camera_destination, 0.05)
