@@ -11,7 +11,10 @@
       "Bash(cmd.exe /c \"godot --headless --quit 2>&1\")",
       "Bash(cmd.exe /c \"where godot 2>&1\")",
       "Bash(\"/c/bin/godot\" --headless --quit)",
-      "Bash(\"C:/bin/Godot_v4.6.2-stable_win64.exe\" --headless --quit)"
+      "Bash(\"C:/bin/Godot_v4.6.2-stable_win64.exe\" --headless --quit)",
+      "Bash(c:/bin/godot/godot *)",
+      "Bash(cmd.exe *)",
+      "Bash(/c/bin/godot/Godot_v4.6.3-stable_win64.exe *)"
     ]
   }
 }

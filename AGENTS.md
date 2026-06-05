@@ -187,7 +187,7 @@ Godot 项目无需 `npm install`、`cargo build` 或 `pip install` 等外部构�
 
 ### 资源冗余
 
-`assets/texture/btn_back.png` 与 `assets/texture/player.png` 存在于项目中但当前代码未引用，属于历史遗留或备用资源。
+已清理未使用的资产文件。所有 `assets/` 下的资源均被项目引用。
 
 ---
 

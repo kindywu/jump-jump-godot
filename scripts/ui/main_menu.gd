@@ -1,4 +1,8 @@
+class_name MainMenu
 extends Control
+
+const TITLE_TEXTURE := preload("res://assets/texture/title.png")
+const START_BTN_TEXTURE := preload("res://assets/texture/btn_start.png")
 
 func _ready() -> void:
 	# Center container fills entire screen
@@ -13,7 +17,7 @@ func _ready() -> void:
 
 	# Title image
 	var title := TextureRect.new()
-	title.texture = load("res://assets/texture/title.png")
+	title.texture = TITLE_TEXTURE
 	title.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
 	title.custom_minimum_size = Vector2(200, 100)
 	vbox.add_child(title)
@@ -21,10 +25,10 @@ func _ready() -> void:
 	# Start button
 	var start_btn := Button.new()
 	start_btn.custom_minimum_size = Vector2(150, 60)
-	start_btn.icon = load("res://assets/texture/btn_start.png")
+	start_btn.icon = START_BTN_TEXTURE
 	start_btn.expand_icon = true
 	start_btn.pressed.connect(_on_start_pressed)
 	vbox.add_child(start_btn)
 
 func _on_start_pressed() -> void:
-	GameState.change_state(GameState.State.PLAYING)
+	Game.change_state(Game.State.PLAYING)

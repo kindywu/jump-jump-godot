@@ -1,4 +1,7 @@
+class_name Player
 extends Node3D
+
+signal player_landed
 
 const INITIAL_POS := Vector3(0.0, 1.5, 0.0)
 const JUMP_SPEED := 3.0
@@ -38,12 +41,18 @@ var fall_played_sound := false
 @onready var charge_particle_timer: Timer = $ChargeParticleTimer
 
 func _ready() -> void:
+	set_process(false)
+	Game.state_changed.connect(_on_state_changed)
+	# Handle case where player is spawned after state already changed to PLAYING
+	if Game.current_state == Game.State.PLAYING:
+		set_process(true)
 	position = INITIAL_POS
 	charge_particle_timer.timeout.connect(_on_charge_particle_timeout)
 
+func _on_state_changed(new_state: Game.State) -> void:
+	set_process(new_state == Game.State.PLAYING)
+
 func _process(delta: float) -> void:
-	if GameState.current_state != GameState.State.PLAYING:
-		return
 
 	if charging:
 		_animate_charge(delta)
@@ -53,23 +62,18 @@ func _process(delta: float) -> void:
 		_animate_fall(delta)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if GameState.current_state != GameState.State.PLAYING:
-		print("[Player] Input ignored: game state is not PLAYING, current=", GameState.current_state)
+	if Game.current_state != Game.State.PLAYING:
 		return
 
 	# Check 200ms prepare timer has elapsed
-	var main_node: Node3D = get_parent()
-	if main_node and not main_node.get("input_ready"):
-		print("[Player] Input ignored: input_ready=false, prepare timer not elapsed")
+	var main_node := get_parent() as Main
+	if main_node and not main_node.input_ready:
 		return
 
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		print("[Player] Mouse left button event: pressed=", event.pressed, " jump_active=", jump_active, " fall_active=", fall_active, " charging=", charging)
 		if event.pressed and not jump_active and not fall_active:
-			print("[Player] Starting charge")
 			_start_charge()
 		elif not event.pressed and charging:
-			print("[Player] Releasing jump")
 			_do_jump()
 
 func _start_charge() -> void:
@@ -80,12 +84,12 @@ func _start_charge() -> void:
 	accumulation_player.play()
 
 func _do_jump() -> void:
-	var main_node: Node3D = get_parent()
-	if main_node == null or not main_node.has_method("_on_player_landed"):
+	var main_node := get_parent() as Main
+	if main_node == null:
 		return
 
 	# Access next_platform through the main node
-	var next_platform: Node3D = main_node.get("next_platform")
+	var next_platform: Platform = main_node.next_platform
 	if next_platform == null:
 		return
 
@@ -100,7 +104,7 @@ func _do_jump() -> void:
 	position.y = INITIAL_POS.y
 
 	var player_pos := position
-	var current_platform: Node3D = main_node.get("current_platform")
+	var current_platform: Platform = main_node.current_platform
 	var current_pos := current_platform.position
 	var next_pos := next_platform.position
 
@@ -123,9 +127,9 @@ func _do_jump() -> void:
 	if landed_next or landed_current:
 		jump_failed = false
 		if landed_next:
-			GameState.add_score()
-			GameState.score_up.emit(landing_pos + Vector3.UP * 0.5)
-			main_node._on_player_landed()
+			Game.add_score()
+			Game.score_up.emit(landing_pos + Vector3.UP * 0.5)
+			player_landed.emit()
 	else:
 		jump_failed = true
 		if _is_touched(current_platform, landing_pos, 0.2):
@@ -187,7 +191,7 @@ func _animate_fall(delta: float) -> void:
 		FallType.STRAIGHT:
 			if position.y < 0.5:
 				fall_active = false
-				GameState.change_state(GameState.State.GAME_OVER)
+				Game.change_state(Game.State.GAME_OVER)
 			else:
 				position.y -= FALL_SPEED * delta
 		FallType.TILT:
@@ -203,7 +207,7 @@ func _animate_fall(delta: float) -> void:
 			else:
 				if position.y < 0.2:
 					fall_active = false
-					GameState.change_state(GameState.State.GAME_OVER)
+					Game.change_state(Game.State.GAME_OVER)
 				else:
 					position.y -= FALL_SPEED * delta
 
